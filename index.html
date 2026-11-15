@@ -669,7 +669,8 @@ KEY=r.key;RAW=r.raw;PW=v;PROF=await H.dec(ACC.prof);fset({n:0,until:0});
 if(!ACC.rec){try{ACC.rec=await makeRecovery(PW);await saveProf()}catch(e){}}
 close();done()}catch(x){msg('خطا در ورود.');v='';dots();busy=false}};
 const showPad=()=>{v='';
-box.innerHTML='<div class="login-brand"><h2>مدرسه‌یار</h2><p>به سامانه مدیریت مالی '+esc((HX.prof()||{}).school||'مدرسه')+' خوش آمدید</p></div><h2 class="pkt">رمز عبور را وارد نمایید:</h2><div class="pdots" id="hxd"><i></i><i></i><i></i><i></i><i></i><i></i></div><p class="hint pkm" id="hxmsg"></p><div class="pgrid" id="hxpad"></div><button class="pforgot" id="hxfg">رمز را فراموش کرده‌ام</button>';
+const schoolName=(()=>{try{return String((HX.prof()||{}).school||'مدرسه').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}catch(e){return 'مدرسه'}})();
+box.innerHTML='<div class="login-brand"><h2>مدرسه‌یار</h2><p>به سامانه مدیریت مالی '+schoolName+' خوش آمدید</p></div><h2 class="pkt">رمز عبور را وارد نمایید:</h2><div class="pdots" id="hxd"><i></i><i></i><i></i><i></i><i></i><i></i></div><p class="hint pkm" id="hxmsg"></p><div class="pgrid" id="hxpad"></div><button class="pforgot" id="hxfg">رمز را فراموش کرده‌ام</button>';
 q('#hxpad').innerHTML=['1','2','3','4','5','6','7','8','9','x','0','d'].map(c=>c==='x'?'<button class="pt px" data-k="x">خروج</button>':c==='d'?'<button class="pt" data-k="d">حذف</button>':'<button data-k="'+c+'">'+'۰۱۲۳۴۵۶۷۸۹'[+c]+'</button>').join('');
 q('#hxpad').onclick=e=>{const b=e.target.closest('button');if(b)push(b.dataset.k)};q('#hxfg').onclick=showRec};
 function showRec(){v='';const has=ACC.rec&&ACC.rec.c;

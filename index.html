@@ -877,7 +877,65 @@ const cname=cid=>{const c=cls(cid),g=c&&grd(c.gid);return g?g.name+' - '+c.name:
 const stats=sid=>{let tot=0,paid=0,od=0;const t=ds(todayJ());S.fees.forEach(f=>{if(f.sid===sid)f.p.forEach(i=>{tot+=i.a;if(i.paid)paid+=i.a;else if(i.due<t)od+=i.a})});return{tot,paid,rem:tot-paid,od}};
 const sumC=cid=>S.students.filter(s=>s.cid===cid).reduce((a,s)=>{const t=stats(s.id);a.n++;a.tot+=t.tot;a.paid+=t.paid;a.rem+=t.rem;return a},{n:0,tot:0,paid:0,rem:0});
 const plan=(a,c,first)=>{const p=[];for(let i=0;i<c;i++)p.push({a,due:ds(addM(first,i)),paid:null});return p};
-function printHTML(title,body){const f=document.createElement('iframe');f.style.cssText='position:fixed;width:0;height:0;border:0';document.body.appendChild(f);const d=f.contentWindow.document;d.open();d.write('<html dir="rtl"><head><meta charset="utf-8"><title>'+esc(title)+'</title><style>body{font-family:Tahoma,Arial;padding:18px;color:#000}h2,h3{text-align:center;margin:4px}table{width:100%;border-collapse:collapse;margin:10px 0}th,td{border:1px solid #444;padding:6px;text-align:center;font-size:13px}.r{font-size:15px;line-height:2.2}.sg{display:flex;justify-content:space-between;margin-top:40px}</style></head><body>'+body+'</body></html>');d.close();setTimeout(()=>{f.contentWindow.focus();f.contentWindow.print();setTimeout(()=>f.remove(),4000)},300)}
+function printHTML(title,body){const f=document.createElement('iframe');f.style.cssText='position:fixed;width:0;height:0;border:0';document.body.appendChild(f);const d=f.contentWindow.document;d.open();d.write('<html dir="rtl"><head><meta charset="utf-8"><title>'+esc(title)+'</title><style>body{font-family:Tahoma,Arial;padding:18px;color:#000}h2,h3{text-align:center;margin:4px}table{width:100%;border-collapse:collapse;margin:10px 0}th,td{border:1px solid #444;padding:6px;text-align:center;font-size:13px}.r{font-size:15px;line-height:2.2}.sg{display:flex;justify-content:space-between;margin-top:40px}
+/* Unified card disclosure control: match the supplied reference */
+.dues-chevron{
+  width:54px!important;height:54px!important;flex:0 0 54px!important;
+  border-radius:50%!important;background:#DCEBE0!important;
+  box-shadow:0 0 0 7px rgba(89,190,130,.20)!important;
+  display:grid!important;place-items:center!important;
+  margin-inline-start:auto!important;position:relative!important;
+}
+.dues-chevron i{
+  width:38px!important;height:38px!important;flex:0 0 38px!important;
+  border-radius:50%!important;background:#FFF!important;
+  display:block!important;position:relative!important;
+}
+.dues-chevron i:after{
+  content:""!important;position:absolute!important;
+  width:11px!important;height:11px!important;left:12px!important;top:9px!important;
+  border-right:4px solid #176B56!important;border-bottom:4px solid #176B56!important;
+  transform:rotate(45deg)!important;transition:transform .18s ease,top .18s ease!important;
+}
+/* Expanded cards point upward; the control itself never shifts. */
+details[open]>summary .dues-chevron i:after,
+.gd[open]>summary .dues-chevron i:after,
+.gc.op>.gch .dues-chevron i:after,
+.cc2.op .dues-chevron i:after,
+.sk-toggle[aria-label="بستن پرونده"] .dues-chevron i:after,
+.stu-parent.on .round-chevron:after{
+  transform:rotate(225deg)!important;top:14px!important;
+}
+.sk .sk-toggle{
+  position:absolute!important;left:12px!important;right:auto!important;
+  top:22px!important;transform:none!important;
+  width:54px!important;height:54px!important;padding:0!important;
+  border:0!important;border-radius:50%!important;background:#DCEBE0!important;
+  box-shadow:0 0 0 7px rgba(89,190,130,.20)!important;
+  display:grid!important;place-items:center!important;z-index:3!important;
+}
+.sk .sk-toggle .dues-chevron{
+  width:38px!important;height:38px!important;flex:0 0 38px!important;
+  margin:0!important;background:#FFF!important;box-shadow:none!important;
+}
+.sk .sk-toggle .dues-chevron i{width:38px!important;height:38px!important;background:#FFF!important}
+.sk .sk-toggle .dues-chevron i:after{left:12px!important;top:9px!important;width:11px!important;height:11px!important}
+.sk .sk-toggle[aria-label="بستن پرونده"] .dues-chevron i:after{top:14px!important}
+/* Student-section expand buttons use the same white disc and green halo. */
+.stu-parent .round-chevron{
+  width:54px!important;height:54px!important;flex:0 0 54px!important;
+  border-radius:50%!important;background:#DCEBE0!important;
+  box-shadow:0 0 0 7px rgba(89,190,130,.20)!important;
+  display:grid!important;place-items:center!important;position:relative!important;
+}
+.stu-parent .round-chevron:after{
+  content:""!important;width:11px!important;height:11px!important;
+  border-right:4px solid #176B56!important;border-bottom:4px solid #176B56!important;
+  transform:rotate(45deg)!important;position:absolute!important;top:17px!important;left:20px!important;
+  transition:transform .18s ease,top .18s ease!important;
+}
+
+</style></head><body>'+body+'</body></html>');d.close();setTimeout(()=>{f.contentWindow.focus();f.contentWindow.print();setTimeout(()=>f.remove(),4000)},300)}
 function receipt(f,ix,i){const s=stu(f.sid);printHTML('رسید',`<h2>${esc(sch())}</h2><h3>${f.p.length===1?'رسید تسویه':'رسید پرداخت قسط'}</h3><div class="r">دریافت از: <b>${esc(s.name)}</b> (${esc(cname(s.cid))})<br>بابت: ${esc(f.head)}${f.p.length>1?' — قسط شماره '+fa(ix+1)+' از '+fa(f.p.length):''}<br>مبلغ: <b>${money(i.a)}</b> تومان<br>تاریخ پرداخت: ${fd(i.paid.d)} · روش: ${esc(i.paid.m)}<br>مانده بدهی: ${money(stats(s.id).rem)} تومان</div><div class="sg"><span>امضای دریافت‌کننده</span><span>مهر مدرسه</span></div>`)}
 function payslip(x){const e=stf(x.emp)||{name:'—',pos:''},p=x.ps||{};printHTML('فیش حقوقی',`<h2>${esc(sch())}</h2><h3>فیش حقوقی</h3><div class="r">نام: <b>${esc(e.name)}</b> · سمت: ${esc(e.pos)}<br>تاریخ: ${fd(x.d)}</div><table><tr><th>شرح</th><th>مبلغ (تومان)</th></tr><tr><td>حقوق پایه</td><td>${money(p.pb)}</td></tr><tr><td>مزایا</td><td>${money(p.pa)}</td></tr><tr><td>اضافه‌کار / حق‌التدریس</td><td>${money(p.po)}</td></tr><tr><td>کسر بیمه</td><td>${money(p.pi)}</td></tr><tr><td>کسر مالیات</td><td>${money(p.pt)}</td></tr><tr><td>سایر کسورات</td><td>${money(p.pd)}</td></tr><tr><th>خالص پرداختی</th><th>${money(x.a)}</th></tr></table><div class="sg"><span>امضای کارمند</span><span>مهر مدرسه</span></div>`)}
 const saveFile=(name,data,mime)=>{try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:mime||'application/octet-stream'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);return true}catch(e){return false}},stamp=()=>{const t=todayJ();return t[0]+pad(t[1])+pad(t[2])};

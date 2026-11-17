@@ -686,14 +686,20 @@ details[open]>summary .dues-chevron i:after,.gd[open]>summary .dues-chevron i:af
 @media(max-width:480px){.sk{padding-left:76px!important}.sk .sk-toggle{left:12px!important;top:18px!important}}
 </style><style>body:not(.rdy)>*:not(.hxo):not(script){visibility:hidden}</style>
 <style id="chevfix">
-/* Unified arrow: white disc, green ring, dark V (matches reference image) */
-.dues-chevron{background:rgba(89,190,130,.5)!important;box-shadow:0 0 0 3px rgba(89,190,130,.18)!important}
-.dues-chevron i{background:#fff!important}
-.dues-chevron i:after,.stu-parent .round-chevron:after{border-right-color:#0A2930!important;border-bottom-color:#0A2930!important}
-.stu-parent .round-chevron{background:radial-gradient(circle at center,#fff 0,#fff 18.5px,rgba(89,190,130,.5) 19px)!important;box-shadow:0 0 0 3px rgba(89,190,130,.18)!important}
-.sk .sk-toggle{background:rgba(89,190,130,.5)!important;box-shadow:0 0 0 3px rgba(89,190,130,.18)!important}
-.sk .sk-toggle .dues-chevron{background:#fff!important;box-shadow:none!important}
-.chev{background:#fff!important;box-shadow:0 0 0 3px rgba(89,190,130,.5)}
+/* Compact arrow: white disc, soft ring, dark V */
+.dues-chevron,.stu-parent .round-chevron{width:40px!important;height:40px!important;min-width:40px!important;flex:0 0 40px!important;background:rgba(147,197,114,.5)!important;box-shadow:none!important}
+.dues-chevron i{width:30px!important;height:30px!important;background:#fff!important}
+.dues-chevron i:after,.stu-parent .round-chevron:after{width:7px!important;height:7px!important;left:10px!important;top:8px!important;border-right:2.5px solid #0A2930!important;border-bottom:2.5px solid #0A2930!important}
+.sk .sk-toggle .dues-chevron i:after{left:10px!important;top:8px!important;width:7px!important;height:7px!important}
+details[open]>summary .dues-chevron i:after,.gd[open]>summary .dues-chevron i:after,.gc.op>.gch .dues-chevron i:after,.cc2.op .dues-chevron i:after,.sk-toggle[aria-label="بستن پرونده"] .dues-chevron i:after{top:12px!important}
+.stu-parent .round-chevron{background:radial-gradient(circle at center,#fff 0,#fff 14.5px,rgba(147,197,114,.5) 15px)!important}
+.stu-parent .round-chevron:after{left:15px!important;top:13px!important}
+.stu-parent.on .round-chevron:after{top:17px!important}
+.sk .sk-toggle{width:40px!important;height:40px!important;min-width:40px!important;top:25px!important;background:rgba(147,197,114,.5)!important;box-shadow:none!important}
+.sk .sk-toggle .dues-chevron{width:30px!important;height:30px!important;min-width:30px!important;flex:0 0 30px!important;background:#fff!important;box-shadow:none!important}
+.sk .sk-toggle .dues-chevron i{width:30px!important;height:30px!important;background:#fff!important}
+.gch .dues-chevron{margin-top:-20px}
+.chev{background:#fff!important;box-shadow:0 0 0 2px rgba(147,197,114,.5)}
 .chev:after{border-right-color:#0A2930;border-bottom-color:#0A2930}
 </style>
 </head>

@@ -941,7 +941,7 @@ function ticker(){const d=document.createElement('div');d.className='hxtkw';cons
 </script>
 <script>
 (async()=>{
-const $=i=>document.getElementById(i),APP_VER='1.3.5';
+const $=i=>document.getElementById(i),APP_VER='1.3.7';
 const MN=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'],SEA=['بهار','تابستان','پاییز','زمستان'];
 const fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]),en=s=>String(s||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
 const num=s=>+en(s).replace(/[^\d]/g,'')||0,money=n=>fa(Math.round(n).toLocaleString('en-US')),esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1051,18 +1051,22 @@ function range(){const y=RP.y;if(RP.t==='m')return[ds([y,RP.m,1]),ds([y,RP.m,dim
 const COL=['#1E9E4A','#2F6FEB','#F2A900','#D32F2F','#8E44AD','#00A3A3','#E67E22','#7F8C8D','#C2185B','#5D4037'];
 function pie(items){items=items.filter(x=>x.v>0);const tot=items.reduce((a,x)=>a+x.v,0);if(!tot)return'<p class="hint">داده‌ای در این بازه نیست.</p>';let a0=-Math.PI/2,s='<svg viewBox="0 0 220 220" width="210" height="210">',L='';items.forEach((x,i)=>{const f=x.v/tot,a1=a0+f*2*Math.PI,p=(a,r)=>(110+r*Math.cos(a)).toFixed(1)+','+(110+r*Math.sin(a)).toFixed(1);s+=f>=.9999?'<circle cx="110" cy="110" r="100" fill="'+COL[i%10]+'"/>':'<path d="M110,110 L'+p(a0,100)+' A100,100 0 '+(f>.5?1:0)+',1 '+p(a1,100)+' Z" fill="'+COL[i%10]+'" stroke="#fff" stroke-width="2"/>';L+='<div class="lg"><i style="background:'+COL[i%10]+'"></i>'+esc(x.n)+' — '+fa((f*100).toFixed(1))+'٪ ('+money(x.v)+')</div>';a0=a1});return'<div class="pie">'+s+'</svg><div>'+L+'</div></div>'}
 function bars(items){items=items.filter(x=>x.v>0);if(!items.length)return'<p class="hint">داده‌ای در این بازه نیست.</p>';const mx=Math.max(...items.map(x=>x.v));return'<div class="bars">'+items.map((x,i)=>'<div class="br"><span class="bl">'+esc(x.n)+'</span><span class="bb"><i style="width:'+Math.max(2,x.v/mx*100)+'%;background:'+COL[i%10]+'"></i></span><b>'+money(x.v)+'</b></div>').join('')+'</div>'}
-let RT='a',RH={i:'',e:''};
+let RT='a',RH={v:'all'};
 function headRep(R){
  const T=(h,r)=>'<table class="msT"><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+r.map(x=>'<tr>'+x.map(y=>'<td>'+y+'</td>').join('')+'</tr>').join('')+'</table>';
- const hn=x=>x.h||'سایر',Li=R.IL.filter(x=>!RH.i||hn(x)===RH.i),Le=R.EL.filter(x=>!RH.e||hn(x)===RH.e),sum=L=>L.reduce((a,x)=>a+x.a,0);
- const part=(title,L,sel,det)=>{const m={};L.forEach(x=>{const k=hn(x);(m[k]=m[k]||{n:0,v:0});m[k].n++;m[k].v+=x.a});const ks=Object.keys(m).sort((p,q)=>m[q].v-m[p].v),tot=sum(L);
-  let h='<h4>'+title+' — '+(sel?esc(sel):'کلی')+'</h4>';
+ const v=RH.v||'all',kind=(v[0]==='i'||v[0]==='e')?v[0]:'',sel=(v.slice(0,2)==='i:'||v.slice(0,2)==='e:')?v.slice(2):'',showI=kind!=='e',showE=kind!=='i';
+ const hn=x=>x.h||'سایر',Li=showI?R.IL.filter(x=>!(kind==='i'&&sel)||hn(x)===sel):[],Le=showE?R.EL.filter(x=>!(kind==='e'&&sel)||hn(x)===sel):[],sum=L=>L.reduce((p,x)=>p+x.a,0);
+ const part=(title,L,sl,det)=>{const m={};L.forEach(x=>{const k=hn(x);(m[k]=m[k]||{n:0,v:0});m[k].n++;m[k].v+=x.a});const ks=Object.keys(m).sort((p,q)=>m[q].v-m[p].v),tot=sum(L);
+  let h='<h4>'+title+' — '+(sl?esc(sl):'کلی')+'</h4>';
   if(!ks.length)return h+'<p class="hint">در این بازه موردی ثبت نشده است.</p>';
   h+=T(['سرفصل','تعداد','مبلغ (تومان)','سهم'],ks.map(k=>[esc(k),fa(m[k].n),money(m[k].v),fa(Math.round(m[k].v/tot*100))+'٪']).concat([['<b>جمع</b>',fa(L.length),'<b>'+money(tot)+'</b>','']]));
-  if(sel)h+=T(['ردیف','تاریخ',det[0],'مبلغ (تومان)'],L.map((x,i)=>[fa(i+1),fd(x.d),det[1](x),money(x.a)]));
+  if(sl)h+=T(['ردیف','تاریخ',det[0],'مبلغ (تومان)'],L.map((x,i)=>[fa(i+1),fd(x.d),det[1](x),money(x.a)]));
   return h};
- const I=sum(Li),E=sum(Le);
- return'<h4>خلاصه — '+R.lab+'</h4>'+T(['شرح','مبلغ (تومان)'],[['درآمد'+(RH.i?' ('+esc(RH.i)+')':''),money(I)],['هزینه'+(RH.e?' ('+esc(RH.e)+')':''),money(E)],['مانده',money(I-E)]])+part('سرفصل درآمدها',Li,RH.i,['دانش‌آموز',x=>esc(x.n)+(x.k?' — '+esc(x.k):'')])+part('سرفصل هزینه‌ها',Le,RH.e,['توضیح',x=>esc(x.n)||'—'])}
+ const I=sum(Li),E=sum(Le),rows=[];
+ if(showI)rows.push(['درآمد'+(kind==='i'&&sel?' ('+esc(sel)+')':''),money(I)]);
+ if(showE)rows.push(['هزینه'+(kind==='e'&&sel?' ('+esc(sel)+')':''),money(E)]);
+ if(showI&&showE)rows.push(['مانده',money(I-E)]);
+ return'<h4>خلاصه — '+R.lab+'</h4>'+T(['شرح','مبلغ (تومان)'],rows)+(showI?part('سرفصل درآمدها',Li,kind==='i'?sel:'',['دانش‌آموز',x=>esc(x.n)+(x.k?' — '+esc(x.k):'')]):'')+(showE?part('سرفصل هزینه‌ها',Le,kind==='e'?sel:'',['توضیح',x=>esc(x.n)||'—']):'')}
 function repData(){const[a,b,lab]=range(),inc=[],IL=[],EL=[],byG={},byC={},byM={},byH={};let I=0,E=0;S.fees.forEach(f=>{const s=stu(f.sid);f.p.forEach(i=>{if(i.paid&&i.paid.d&&inR(i.paid.d,a,b)){const amount=Number(i.a);if(!Number.isFinite(amount)||amount<=0)return;I+=amount;const c=s&&cls(s.cid),g=c&&grd(c.gid);IL.push({d:i.paid.d,n:s?s.name:'—',k:c?cname(c.id):'',h:f.head||'',m:i.paid.m||'',a:amount});if(g){byG[g.name]=(byG[g.name]||0)+amount;const k=g.name+' - '+c.name;byC[k]=(byC[k]||0)+amount}byM[ym(i.paid.d)]=(byM[ym(i.paid.d)]||0)+amount}})});S.exp.forEach(x=>{if(inR(x.d,a,b)){const amount=Number(x.a);if(Number.isFinite(amount)&&amount>0){E+=amount;EL.push({d:x.d,h:x.head||'سایر',n:x.n||'',a:amount});byH[x.head||'سایر']=(byH[x.head||'سایر']||0)+amount}}});
  const arr=o=>Object.keys(o).map(k=>({n:k,v:o[k]}));IL.sort((p,q)=>p.d<q.d?-1:p.d>q.d?1:0);EL.sort((p,q)=>p.d<q.d?-1:p.d>q.d?1:0);return{a,b,lab,I,E,IL,EL,G:arr(byG),Cc:arr(byC),M:Object.keys(byM).sort().map(k=>({n:MN[+k.split('/')[1]-1]+' '+fa(k.split('/')[0]),v:byM[k]})),H:arr(byH)}}
 function repHTML(R){let rec=0;S.students.forEach(s=>rec+=stats(s.id).rem);const T=(h,r)=>'<table class="msT"><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+r.map(x=>'<tr>'+x.map(y=>'<td>'+y+'</td>').join('')+'</tr>').join('')+'</table>';
@@ -1073,9 +1077,8 @@ function rRep(){const R=repData(),y=todayJ()[0];const ys=[];for(let i=y+1;i>=y-5
  const gs=S.grades.map(g=>'<option value="g'+g.id+'">'+esc(g.name)+' (همه‌ی کلاس‌ها)</option>').join('')+S.classes.map(k=>'<option value="c'+k.id+'">'+esc(cname(k.id))+'</option>').join('');
  const tabs='<div class="seg" id="rtabs" style="margin-bottom:12px"><button data-a="rtab" data-id="a"'+(RT==='a'?' class="on"':'')+'>آنالیز نموداری</button><button data-a="rtab" data-id="h"'+(RT==='h'?' class="on"':'')+'>گزارش سرفصل‌ها</button></div>';
  const btns='<button class="hxb" data-a="pdf">چاپ / ذخیره PDF</button><button class="hxg" data-a="xls">خروجی اکسل (xls)</button>';
- if(RT==='h'){const opt=(L,cur)=>'<option value="">کلی (همه‌ی سرفصل‌ها)</option>'+L.map(h=>'<option value="'+esc(h)+'"'+(cur===h?' selected':'')+'>'+esc(h)+'</option>').join('');
-  const hi=[...new Set([...(S.heads.i||[]),...R.IL.map(x=>x.h||'سایر')])],he=[...new Set([...(S.heads.e||[]),...R.EL.map(x=>x.h||'سایر')])];
-  const hf='<label class="fl">سرفصل درآمدها</label><select id="rhi" style="flex:1 1 100%">'+opt(hi,RH.i)+'</select><label class="fl">سرفصل هزینه‌ها</label><select id="rhe" style="flex:1 1 100%">'+opt(he,RH.e)+'</select>';
+ if(RT==='h'){const hi=[...new Set([...(S.heads.i||[]),...R.IL.map(x=>x.h||'سایر')])],he=[...new Set([...(S.heads.e||[]),...R.EL.map(x=>x.h||'سایر')])],cv=RH.v||'all',o=(val,txt)=>'<option value="'+esc(val)+'"'+(cv===val?' selected':'')+'>'+esc(txt)+'</option>';
+  const hf='<label class="fl">سرفصل</label><select id="rhs" style="flex:1 1 100%">'+o('all','درآمد و هزینه (کلی)')+o('ia','همه‌ی سرفصل‌های درآمد')+o('ea','همه‌ی سرفصل‌های هزینه')+'<optgroup label="سرفصل درآمد">'+hi.map(h=>o('i:'+h,h)).join('')+'</optgroup><optgroup label="سرفصل هزینه">'+he.map(h=>o('e:'+h,h)).join('')+'</optgroup></select>';
   $('t_rep').innerHTML='<div class="noprint"><h3>گزارش‌ها</h3>'+tabs+'<div class="rpf">'+c+hf+'</div>'+btns+'</div><div id="rp"><h3 class="onlyprint">'+esc(sch())+' — گزارش سرفصل‌ها '+R.lab+'</h3>'+headRep(R)+'</div>';return}
  $('t_rep').innerHTML='<div class="noprint"><h3>گزارش‌ها</h3>'+tabs+'<div class="rpf">'+c+'</div>'+btns+'</div><div id="rp"><h3 class="onlyprint">'+esc(sch())+' — گزارش مالی '+R.lab+'</h3>'+repHTML(R)+'</div><div class="noprint card2" style="margin-top:16px"><h3>فهرست دانش‌آموزان</h3><select id="ls">'+gs+'</select><button class="hxb" data-a="lpdf">چاپ / PDF فهرست</button><button class="hxg" data-a="lxls">اکسل فهرست</button></div>'}
 function listRows(v){const ids=v[0]==='g'?S.classes.filter(c=>c.gid===v.slice(1)).map(c=>c.id):[v.slice(1)];const r=[];ids.forEach(cid=>S.students.filter(s=>s.cid===cid).forEach((s,i)=>{const t=stats(s.id);r.push([fa(i+1),esc(s.name),esc(s.father||''),fd(esc(s.nid||'')),fd(esc(s.sn||'')),esc(cname(cid)),fd(esc(s.phone||'')),money(t.tot),money(t.paid),money(t.rem)])}));return'<table class="msT"><tr>'+['ردیف','نام','نام پدر','کد ملی','شماره دانش‌آموزی','کلاس','تلفن ولی','کل','پرداختی','مانده'].map(x=>'<th>'+x+'</th>').join('')+'</tr>'+r.map(x=>'<tr>'+x.map(y=>'<td>'+y+'</td>').join('')+'</tr>').join('')+'</table>'}
@@ -1103,7 +1106,7 @@ document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.
 document.addEventListener('change',e=>{if(['dfg','dfc','dfn'].includes(e.target.id)){if(e.target.id==='dfg'&&$('dfc'))$('dfc').value='';renderDebtors()}if(['dufg','dufc'].includes(e.target.id)){if(e.target.id==='dufg'&&$('dufc'))$('dufc').value='';renderDueList()}});
 document.addEventListener('focusin',e=>{if(e.target&&e.target.id==='stq'){const p=$('stu-panel');if(p){p.hidden=true;p.innerHTML='';p.dataset.kind=''}stuSelected=null;document.querySelectorAll('.stu-parent').forEach(x=>x.classList.remove('on'));}});
 document.addEventListener('input',e=>{const t=e.target;if(t.id==='stq'){stuQ=t.value;stList()}else if(t.id==='rq'){const s=selSid&&stu(selSid);if(s&&t.value!==s.name){selSid=null;$('rsel').innerHTML=''}rres()}});
-document.addEventListener('change',e=>{const t=e.target;if(t.id==='rhi'||t.id==='rhe'){if(t.id==='rhi')RH.i=t.value;else RH.e=t.value;rRep()}if(t.id==='rt'){$('rc').hidden=t.value!=='c';$('ri').hidden=t.value!=='i'}if(t.closest&&t.closest('#t_rep')&&/^rp|^rps$/.test(t.id)){if(t.id==='rpt')RP.t=t.value;if(t.id==='rpy')RP.y=+t.value;if(t.id==='rpm')RP.m=+t.value;if(t.id==='rps')RP.s=+t.value;rRep()}if(t.classList&&t.classList.contains('bc')){t.checked?bsel.add(t.value):bsel.delete(t.value)}
+document.addEventListener('change',e=>{const t=e.target;if(t.id==='rhs'){RH.v=t.value;rRep()}if(t.id==='rt'){$('rc').hidden=t.value!=='c';$('ri').hidden=t.value!=='i'}if(t.closest&&t.closest('#t_rep')&&/^rp|^rps$/.test(t.id)){if(t.id==='rpt')RP.t=t.value;if(t.id==='rpy')RP.y=+t.value;if(t.id==='rpm')RP.m=+t.value;if(t.id==='rps')RP.s=+t.value;rRep()}if(t.classList&&t.classList.contains('bc')){t.checked?bsel.add(t.value):bsel.delete(t.value)}
  if(t.closest&&t.closest('#rpa,#rpb')){RP.a=getD($('rpa'));RP.b=getD($('rpb'));rRep()}});
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-tb],[data-a]');if(!b||b.closest('.hxo'))return;if(b.dataset.tb){tab=b.dataset.tb;render();window.scrollTo(0,0);return}
  const a=b.dataset.a,id=b.dataset.id;

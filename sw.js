@@ -1,4 +1,4 @@
-const C='madrasehyar-v22',F='fonts-madrasehyar',A=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
+const C='madrasehyar-v23',F='fonts-madrasehyar',A=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 // Install: always download fresh copies (cache:'reload' skips the browser HTTP cache, so an old index.html can never be re-stored as the "new" version).
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>Promise.all(A.map(u=>fetch(new Request(u,{cache:'reload'})).then(r=>{if(!r.ok)throw new Error('sw install: '+u);return c.put(u,r)})))));});
 self.addEventListener('message',e=>{if(e.data&&e.data.type==='SKIP_WAITING')self.skipWaiting();});

@@ -941,7 +941,7 @@ function ticker(){const d=document.createElement('div');d.className='hxtkw';cons
 </script>
 <script>
 (async()=>{
-const $=i=>document.getElementById(i),APP_VER='1.3.7';
+const $=i=>document.getElementById(i),APP_VER='1.3.8';
 const MN=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'],SEA=['بهار','تابستان','پاییز','زمستان'];
 const fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]),en=s=>String(s||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
 const num=s=>+en(s).replace(/[^\d]/g,'')||0,money=n=>fa(Math.round(n).toLocaleString('en-US')),esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1009,9 +1009,9 @@ function insList(s,acts){let h='<div data-a="nop" style="margin-top:8px;cursor:d
  f.p.forEach((i,ix)=>{const st=i.paid?['تسویه شده','ok']:i.due<t?['بدهکار','late']:['بدهکار','late'];h+='<div class="ik"><div class="skh"><b>'+(f.p.length>1?'قسط '+fa(ix+1):'پرداخت نقدی')+'</b><span class="'+st[1]+'">'+st[0]+'</span></div><div class="sl1">مبلغ قسط: <b>'+money(i.a)+'</b> تومان</div><div class="sl1">تاریخ سررسید: '+fd(i.due)+'</div><div class="sl1">تاریخ وصول: '+(i.paid?'<b>'+fd(i.paid.d)+'</b>':'<span class="hint">منتظر پرداخت</span>')+'</div>'+(acts?(i.paid?'<button class="msb" data-a="rcp" data-f="'+f.id+'" data-i="'+ix+'">رسید</button>':'<button class="msb gbt" data-a="pay" data-f="'+f.id+'" data-i="'+ix+'">دریافت</button>'):'')+'</div>'});h+='</div>'});return h+'</div>'}
 function stuCard(s,acts){const t=stats(s.id),st=stat(t),F=S.fees.filter(f=>f.sid===s.id),n=F.reduce((a,f)=>a+f.p.length,0),pd=F.reduce((a,f)=>a+f.p.filter(i=>i.paid).length,0),k=s.id,o=openS.has(k),c=cls(s.cid),g=c&&grd(c.gid);
  const tog='<button class="sk-toggle" data-a="sx" data-id="'+s.id+'" aria-label="'+(o?'بستن پرونده':'باز کردن پرونده')+'"><span class="dues-chevron" aria-hidden="true"><i></i></span></button>';
- const brief='<div class="sk-brief" dir="rtl"><div class="sk-title-row"><b>'+esc(s.name)+'</b><span class="sk-nid">ش ملی: '+fd(esc(s.nid||'—'))+'</span></div><div class="sk-meta">'+esc(g?g.name:'—')+' · '+esc(c?c.name:'—')+'</div><div class="sk-status"><span class="'+st[1]+'">'+(t.tot===0?'بدون مطالبه':t.rem<=0?'تسویه‌شده':'بدهکار')+'</span></div>'+tog+'</div>';
+ const brief='<div class="sk-brief" dir="rtl" data-a="sx" data-id="'+s.id+'"><div class="sk-title-row"><b>'+esc(s.name)+'</b><span class="sk-nid">ش ملی: '+fd(esc(s.nid||'—'))+'</span></div><div class="sk-meta">'+esc(g?g.name:'—')+' · '+esc(c?c.name:'—')+'</div><div class="sk-status"><span class="'+st[1]+'">'+(t.tot===0?'بدون مطالبه':t.rem<=0?'تسویه‌شده':'بدهکار')+'</span></div>'+tog+'</div>';
  const extra='<div class="sk-extra">'+(acts?'<div class="sk-actions"><button class="msb" data-a="sedit" data-id="'+s.id+'">ویرایش</button><button class="msb" data-a="smove" data-id="'+s.id+'">انتقال</button><button class="msb" data-a="sdel" data-id="'+s.id+'">حذف</button></div>':'')+'<div class="sl1">مبلغ کل شهریه: <b>'+money(t.tot)+'</b> تومان</div><div class="sl1">تعداد اقساط پرداخت‌شده: '+fa(pd)+'</div><div class="sl1">تعداد اقساط مانده: '+fa(n-pd)+'</div>'+(o?insList(s,acts):'')+'</div>';
- return'<div class="sk" data-id="'+s.id+'">'+brief+(o?extra:'')+'</div>'}
+ return'<div class="sk" data-id="'+s.id+'"'+(o?'':' data-a="sx"')+'>'+brief+(o?extra:'')+'</div>'}
 
 function rDash(){let n=0,tot=0,paid=0,od=0;S.students.forEach(s=>{const t=stats(s.id);n++;tot+=t.tot;paid+=t.paid;od+=t.od});const ex=S.exp.reduce((a,x)=>a+x.a,0);
  let h='<div class="dash"><div class="kp"><div><span>تعداد دانش‌آموزان</span><b>'+fa(n)+'</b></div><div><span>تعداد کلاس‌ها</span><b>'+fa(S.classes.length)+'</b></div><div><span>مجموع شهریه‌های وصول‌شده</span><b class="kg">'+money(paid)+'</b></div><div><span>مجموع شهریه‌های وصول‌نشده</span><b class="kb">'+money(tot-paid)+'</b></div><div><span>مجموع مطالبات سررسید گذشته</span><b class="late">'+money(od)+'</b></div><div><span>جمع هزینه‌ها</span><b>'+money(ex)+'</b></div></div>'+(dip?'<button class="hxb" data-a="inst">نصب برنامه روی گوشی یا رایانه</button>':'');
